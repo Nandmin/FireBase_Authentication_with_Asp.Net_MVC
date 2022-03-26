@@ -141,7 +141,7 @@ namespace FireBase_Authentication_MVC.Controllers
             }
         }
 
-        private ActionResult RedirectToLocal (string returnUrl)
+        private ActionResult RedirectToLocal(string returnUrl)
         {
             try
             {
@@ -158,6 +158,18 @@ namespace FireBase_Authentication_MVC.Controllers
             }
 
             return this.RedirectToAction("LogOff", "Account");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+
+        public ActionResult LogOff()
+        {
+            var ctx = Request.GetOwinContext();
+            var authenticationManager = ctx.Authentication;
+            authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+
+            return RedirectToAction("Login", "Action");
         }
 
     }
