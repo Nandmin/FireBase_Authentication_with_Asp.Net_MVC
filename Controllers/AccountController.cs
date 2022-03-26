@@ -86,7 +86,7 @@ namespace FireBase_Authentication_MVC.Controllers
                     if (token != "")
                     {
                         this.SignInUser(user.Email, token, false);
-                        return this.RedirectLocal(returnUrl);
+                        return this.RedirectToLocal(returnUrl);
                     }
                     else
                     {
@@ -100,7 +100,7 @@ namespace FireBase_Authentication_MVC.Controllers
                 Console.Write(ex);
             }
 
-            return View();
+            return this.View(model);
         }
 
         private void SignInUser(string email, string token, bool isPersistent)
@@ -122,6 +122,42 @@ namespace FireBase_Authentication_MVC.Controllers
             {
                 throw ex;
             }
+        }
+
+        private void ClaimIdentities(string username, bool isPersistent)
+        {
+            var claims = new List<Claim>();
+
+            try
+            {
+                // setting
+                claims.Add(new Claim(ClaimTypes.Name, username));
+                var claimIdenties = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        private ActionResult RedirectToLocal (string returnUrl)
+        {
+            try
+            {
+                // Verification
+                if (Url.IsLocalUrl(returnUrl))
+                {
+                    return this.Redirect(returnUrl);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return this.RedirectToAction("LogOff", "Account");
         }
 
     }
